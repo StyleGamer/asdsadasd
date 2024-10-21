@@ -1,1 +1,2 @@
 exec TT_NIFI_PONTOMAIS '${registration_number}, ${date}, ${time}, ${time_card_index}, ${employee_name}, ${job_title_name}, ${team_name}'
+${now():toNumber():format('yyyy-MM-dd'):toDate('yyyy-MM-dd', 'GMT'):toNumber():minus(${now():toNumber():format('dd'):toNumber():multiply(86400):multiply(45):multiply(1000)}):format('yyyy-MM-dd')}
