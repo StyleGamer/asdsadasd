@@ -1,2 +1,37 @@
 exec TT_NIFI_PONTOMAIS '${registration_number}, ${date}, ${time}, ${time_card_index}, ${employee_name}, ${job_title_name}, ${team_name}'
 ${now():toNumber():format('yyyy-MM-dd'):toDate('yyyy-MM-dd', 'GMT'):toNumber():minus(${now():toNumber():format('dd'):toNumber():multiply(86400):multiply(45):multiply(1000)}):format('yyyy-MM-dd')}
+
+
+import org.apache.nifi.processor.io.StreamCallback
+import java.text.SimpleDateFormat
+import java.util.Date
+
+class MyStreamCallback implements StreamCallback {
+    @Override
+    void invoke(InputStream inputStream, OutputStream outputStream) {
+        // Pega a data atual
+        Date currentDate = new Date()
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd")
+        String currentDateFormatted = dateFormat.format(currentDate)
+
+        // Pega a data anterior
+        Date previousDate = new Date(currentDate.getTime() - (24 * 60 * 60 * 1000))
+        String previousDateFormatted = dateFormat.format(previousDate)
+
+        // Cria um mapa com os resultados
+        def result = [
+            current_date: currentDateFormatted,
+            previous_date: previousDateFormatted
+        ]
+
+        // Escreve a saída como JSON
+        outputStream.write(result.toString().bytes)
+    }
+}
+
+// Configura o processador
+def flowFile = session.get()
+if (flowFile != null) {
+    flowFile = session.write(flowFile, new MyStreamCallback())
+    session.transfer(flowFile, REL_SUCCESS)
+}
