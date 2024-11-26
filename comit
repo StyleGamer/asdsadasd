@@ -1,0 +1,6 @@
+select * from agenda where codigo_agenda  = 58610
+select * from agenda_pedido where codigo_agenda = 58610
+select * from agenda_pedido_item where codigo_agenda_pedido in (select codigo_agenda_pedido from agenda_pedido where codigo_agenda = 58610)
+select * from agenda_portaria where codigo_agenda = 58610
+select * from agenda_xml where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where codigo_agenda = 58610)
+select * from agenda_xml_item where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where codigo_agenda = 58610)
