@@ -1,1 +1,32 @@
-exec ttp_integracao_agenda_i '${codigoAgenda}'
+DROP TABLE IF EXISTS #TEMP_PROP;
+ 
+    SELECT @PROPRIEDADE				AS PROPRIEDADE				
+		 , @PEDIDO					AS PEDIDO					
+		 , @ITEM_PROPRIEDADE		AS ITEM_PROPRIEDADE			
+		 , @VALOR_PROPRIEDADE		AS VALOR_PROPRIEDADE		
+		 , @DATA_PARA_TRANSFERENCIA	AS DATA_PARA_TRANSFERENCIA	
+    INTO #TEMP_PROP
+ 
+    MERGE INTO PROP_COMPRAS AS target
+    USING #TEMP_PROP AS source
+    ON target.pedido = source.pedido and target.propriedade = source.propriedade
+    WHEN MATCHED THEN
+        UPDATE SET
+            target.VALOR_PROPRIEDADE = source.VALOR_PROPRIEDADE
+ 
+    WHEN NOT MATCHED BY TARGET THEN
+        INSERT (
+             PROPRIEDADE				
+			,PEDIDO					
+			,ITEM_PROPRIEDADE			
+			,VALOR_PROPRIEDADE		
+			,DATA_PARA_TRANSFERENCIA	
+        )
+        VALUES (
+             source.PROPRIEDADE			
+            ,source.PEDIDO					
+		    ,source.ITEM_PROPRIEDADE		
+		    ,source.VALOR_PROPRIEDADE		
+		    ,source.DATA_PARA_TRANSFERENCIA
+        );
+  DROP TABLE IF EXISTS #TEMP_PROP;
