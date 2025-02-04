@@ -1,25 +1,22 @@
-    MERGE INTO PROP_COMPRAS AS target
-    USING (SELECT '${CodigoPedido}' as PEDIDO,'${status}' AS VALOR_PROPRIEDADE, '00178' AS PROPRIEDADE
-		   UNION
-		   SELECT CONCAT('${CodigoPedido}','A') as PEDIDO,'${status}' AS VALOR_PROPRIEDADE, '00178' AS PROPRIEDADE
-		  ) AS source
-    ON TARGET.PEDIDO = SOURCE.PEDIDO AND TARGET.PROPRIEDADE = SOURCE.PROPRIEDADE
-    WHEN MATCHED THEN
-        UPDATE SET
-            target.VALOR_PROPRIEDADE = source.VALOR_PROPRIEDADE
- 
-    WHEN NOT MATCHED BY TARGET THEN
-        INSERT (
-             PROPRIEDADE				
-			,PEDIDO					
-			,ITEM_PROPRIEDADE			
-			,VALOR_PROPRIEDADE		
-			,DATA_PARA_TRANSFERENCIA	
-        )
-        VALUES (
-             source.PROPRIEDADE			
-            ,source.PEDIDO					
-		    ,1	
-		    ,source.VALOR_PROPRIEDADE		
-		    ,GETDATE()
-        );
+
+ON (c.codigo_usuario = '{CodigoUsuario}')
+WHEN MATCHED THEN 
+UPDATE SET c.codigo_cliente = '{CodigoCliente}'
+,c.codigo_empresa	  = '{CodigoEmpresa}'
+,c.login			  = '{Login}'
+,c.nome				  = '{Nome}'
+,c.email			  = '{Email}'
+,c.url			      = '{Url}'
+,c.lider			  = '{Lider}'
+,c.ativo			  = '{Ativo}'
+,c.atualizar_senha    = '{AtualizarSenha}'
+,c.segredo_otp	      = '{SegredoOTP}'
+,c.validou_otp	      = '{ValidouOTP}'
+,c.cnpj_fornecedor    = '{CnpjFornecedor}'
+,c.criado_por	      = '{CriadoPor}'
+,c.criado_em	      = '{CriadoEm}'
+,c.alterado_por	      = '{AlteradoPor}'
+,c.alterado_em	      = '{AlteradoEm}'
+,c.excluido_por	      = '{ExcluidoPor}'
+,c.excluido_em	      = '{ExcluidoEm}'
+WHEN NOT MATCHED THEN 
