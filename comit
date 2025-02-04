@@ -1,64 +1,66 @@
-merge into usuario as c
-USING usuario  as u
-
-ON (c.codigo_usuario        =  ${CodigoUsuario})
+MERGE INTO usuario AS c
+USING usuario AS u
+ON (c.codigo_usuario = ${CodigoUsuario})
 WHEN MATCHED THEN 
-UPDATE SET c.codigo_cliente = {CodigoCliente}
-,c.codigo_empresa			= ${CodigoEmpresa}
-,c.login				    = '${Login}'
-,c.nome					    = '${Nome}'
-,c.email				    = '${Email}'
-,c.url					    = '${Url}'
-,c.lider				    = CAST(IFF('${Lider}' = 'True',1,0) AS INT)
-,c.ativo				    = CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
-,c.atualizar_senha		    = CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
-,c.segredo_otp			    = '${SegredoOTP}'
-,c.validou_otp			    =  CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
-,c.cnpj_fornecedor		    = '${CnpjFornecedor}'
-,c.criado_por			    = ${CriadoPor}
-,c.criado_em			    = REPLACE('${CriadoEm}', 'T', ' ')
-,c.alterado_por			    = ${AlteradoPor}
-,c.alterado_em			    = REPLACE('${AlteradoEm}', 'T', ' ')
-,c.excluido_por			    = ${ExcluidoPor}
-,c.excluido_em			    = REPLACE('${ExcluidoEm}', 'T', ' ')
+UPDATE SET 
+    c.codigo_cliente = ${CodigoCliente},
+    c.codigo_empresa = ${CodigoEmpresa},
+    c.login = '${Login}',
+    c.nome = '${Nome}',
+    c.email = '${Email}',
+    c.url = '${Url}',
+    c.lider = IIF('${Lider}' = 'True', 1, 0),
+    c.ativo = IIF('${Ativo}' = 'True', 1, 0),
+    c.atualizar_senha = IIF('${AtualizarSenha}' = 'True', 1, 0),
+    c.segredo_otp = '${SegredoOTP}',
+    c.validou_otp = IIF('${ValidouOTP}' = 'True', 1, 0),
+    c.cnpj_fornecedor = '${CnpjFornecedor}',
+    c.criado_por = ${CriadoPor},
+    c.criado_em = REPLACE('${CriadoEm}', 'T', ' '), 
+    c.alterado_por = ${AlteradoPor},
+    c.alterado_em = REPLACE('${AlteradoEm}', 'T', ' '), 
+    c.excluido_por = ${ExcluidoPor},
+    c.excluido_em = REPLACE('${ExcluidoEm}', 'T', ' ') 
 WHEN NOT MATCHED THEN 
 INSERT (
-codigo_usuario
-,codigo_cliente
-,codigo_empresa
-,login
-,nome
-,email
-,url
-,lider
-,ativo
-,atualizar_senha
-,segredo_otp
-,validou_otp
-,cnpj_fornecedor
-,criado_por
-,criado_em
-,alterado_por
-,alterado_em
-,excluido_por
-,excluido_em)
-VALUES(
-${CodigoUsuario}
-,${CodigoCliente}
-,${CodigoEmpresa}
-,'${Login}'
-,'${Nome}'
-,'${Email}'
-,'${Url}'
-,CAST(IFF('${Lider}' = 'True',1,0) AS INT)
-,CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
-,CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
-,'${SegredoOTP}'
-, CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
-,'${CnpjFornecedor}'
-,${CriadoPor}
-,REPLACE('${CriadoEm}', 'T', ' ')
-,${AlteradoPor}
-,REPLACE('${AlteradoEm}', 'T', ' ')
-,${ExcluidoPor}
-,REPLACE('${ExcluidoEm}', 'T', ' '));
+    codigo_usuario,
+    codigo_cliente,
+    codigo_empresa,
+    login,
+    nome,
+    email,
+    url,
+    lider,
+    ativo,
+    atualizar_senha,
+    segredo_otp,
+    validou_otp,
+    cnpj_fornecedor,
+    criado_por,
+    criado_em,
+    alterado_por,
+    alterado_em,
+    excluido_por,
+    excluido_em
+)
+VALUES (
+    ${CodigoUsuario},
+    ${CodigoCliente},
+    ${CodigoEmpresa},
+    '${Login}',
+    '${Nome}',
+    '${Email}',
+    '${Url}',
+    IIF('${Lider}' = 'True', 1, 0),
+    IIF('${Ativo}' = 'True', 1, 0),
+    IIF('${AtualizarSenha}' = 'True', 1, 0),
+    '${SegredoOTP}',
+    IIF('${ValidouOTP}' = 'True', 1, 0),
+    '${CnpjFornecedor}',
+    ${CriadoPor},
+    REPLACE('${CriadoEm}', 'T', ' '), 
+    ${AlteradoPor},
+    REPLACE('${AlteradoEm}', 'T', ' '), 
+    ${ExcluidoPor},
+    REPLACE('${ExcluidoEm}', 'T', ' ') 
+);
