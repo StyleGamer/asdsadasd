@@ -1,29 +1,27 @@
-select * from usuario where login like '%diogo.granado%'
-
 
 merge into usuario as c
 USING usuario  as u
 
-ON (c.codigo_usuario        = '${CodigoUsuario}')
+ON (c.codigo_usuario        =  ${CodigoUsuario})
 WHEN MATCHED THEN 
-UPDATE SET c.codigo_cliente = '${CodigoCliente}'
-,c.codigo_empresa			= '${CodigoEmpresa}'
+UPDATE SET c.codigo_cliente = {CodigoCliente}
+,c.codigo_empresa			= ${CodigoEmpresa}
 ,c.login				    = '${Login}'
 ,c.nome					    = '${Nome}'
 ,c.email				    = '${Email}'
 ,c.url					    = '${Url}'
-,c.lider				    = '${Lider}'
-,c.ativo				    = '${Ativo}'
-,c.atualizar_senha		    = '${AtualizarSenha}'
+,c.lider				    = CAST(IFF('${Lider}' = 'True',1,0) AS INT)
+,c.ativo				    = CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
+,c.atualizar_senha		    = CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
 ,c.segredo_otp			    = '${SegredoOTP}'
-,c.validou_otp			    = '${ValidouOTP}'
+,c.validou_otp			    =  CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
 ,c.cnpj_fornecedor		    = '${CnpjFornecedor}'
-,c.criado_por			    = '${CriadoPor}'
-,c.criado_em			    = '${CriadoEm}'
-,c.alterado_por			    = '${AlteradoPor}'
-,c.alterado_em			    = '${AlteradoEm}'
-,c.excluido_por			    = '${ExcluidoPor}'
-,c.excluido_em			    = '${ExcluidoEm}'
+,c.criado_por			    = ${CriadoPor}
+,c.criado_em			    = REPLACE('${CriadoEm}', 'T', ' ')
+,c.alterado_por			    = ${AlteradoPor}
+,c.alterado_em			    = REPLACE('${AlteradoEm}', 'T', ' ')
+,c.excluido_por			    = ${ExcluidoPor}
+,c.excluido_em			    = REPLACE('${ExcluidoEm}', 'T', ' ')
 WHEN NOT MATCHED THEN 
 INSERT (
 codigo_usuario
@@ -46,22 +44,22 @@ codigo_usuario
 ,excluido_por
 ,excluido_em)
 VALUES(
-'${CodigoUsuario}'
-,'${CodigoCliente}'
-,'${CodigoEmpresa}'
+${CodigoUsuario}
+,${CodigoCliente}
+,${CodigoEmpresa}
 ,'${Login}'
 ,'${Nome}'
 ,'${Email}'
 ,'${Url}'
-,'${Lider}'
-,'${Ativo}'
-,'${AtualizarSenha}'
+CAST(IFF(,'${Lider}' = 'True',1,0) AS INT)
+,CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
+,CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
 ,'${SegredoOTP}'
-,'${ValidouOTP}'
+, CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
 ,'${CnpjFornecedor}'
-,'${CriadoPor}'
-,'${CriadoEm}'
-,'${AlteradoPor}'
-,'${AlteradoEm}'
-,'${ExcluidoPor}'
-,'${ExcluidoEm}');
+,${CriadoPor}
+,REPLACE('${CriadoEm}', 'T', ' ')
+,${AlteradoPor}
+,REPLACE('${AlteradoEm}', 'T', ' ')
+,${ExcluidoPor}
+,REPLACE('${ExcluidoEm}', 'T', ' '));
