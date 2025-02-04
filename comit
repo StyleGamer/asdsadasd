@@ -43,7 +43,6 @@ codigo_usuario
 ,criado_em
 ,alterado_por
 ,alterado_em
-,excluido
 ,excluido_por
 ,excluido_em)
 VALUES(
