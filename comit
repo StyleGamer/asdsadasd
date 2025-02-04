@@ -22,7 +22,7 @@ UPDATE SET
     c.excluido_por = ${ExcluidoPor},
     c.excluido_em = REPLACE('${ExcluidoEm}', 'T', ' ') 
 WHEN NOT MATCHED THEN 
-INSERT (
+INSERT usuario (
     codigo_usuario,
     codigo_cliente,
     codigo_empresa,
