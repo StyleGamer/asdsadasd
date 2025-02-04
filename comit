@@ -16,11 +16,11 @@ UPDATE SET
     c.validou_otp = IIF('${ValidouOTP}' = 'true', 1, 0),
     c.cnpj_fornecedor = '${CnpjFornecedor}',
     c.criado_por = ${CriadoPor},
-    c.criado_em = REPLACE(${CriadoEm}, 'T', ' '), 
+    c.criado_em = REPLACE('${CriadoEm}', 'T', ' '), 
     c.alterado_por = ${AlteradoPor},
-    c.alterado_em = REPLACE(${AlteradoEm}, 'T', ' '), 
+    c.alterado_em = REPLACE('${AlteradoEm}', 'T', ' '), 
     c.excluido_por = ${ExcluidoPor},
-    c.excluido_em = REPLACE(${ExcluidoEm}, 'T', ' ') 
+    c.excluido_em = REPLACE('${ExcluidoEm}', 'T', ' ') 
 WHEN NOT MATCHED THEN 
 INSERT usuario (
     codigo_usuario,
@@ -58,9 +58,9 @@ VALUES (
     IIF('${ValidouOTP}' = 'true', 1, 0),
     '${CnpjFornecedor}',
     ${CriadoPor},
-    REPLACE(${CriadoEm}, 'T', ' '), 
+    REPLACE('${CriadoEm}', 'T', ' '),
     ${AlteradoPor},
-    REPLACE(${AlteradoEm}, 'T', ' '), 
+    REPLACE('${AlteradoEm}', 'T', ' '), 
     ${ExcluidoPor},
-    REPLACE(${ExcluidoEm}, 'T', ' ') 
+    REPLACE('${ExcluidoEm}', 'T', ' ') 
 );
