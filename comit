@@ -1,22 +1,68 @@
+select * from usuario where login like '%diogo.granado%'
 
-ON (c.codigo_usuario = '{CodigoUsuario}')
+
+merge into usuario as c
+USING usuario  as u
+
+ON (c.codigo_usuario        = '${CodigoUsuario}')
 WHEN MATCHED THEN 
-UPDATE SET c.codigo_cliente = '{CodigoCliente}'
-,c.codigo_empresa	  = '{CodigoEmpresa}'
-,c.login			  = '{Login}'
-,c.nome				  = '{Nome}'
-,c.email			  = '{Email}'
-,c.url			      = '{Url}'
-,c.lider			  = '{Lider}'
-,c.ativo			  = '{Ativo}'
-,c.atualizar_senha    = '{AtualizarSenha}'
-,c.segredo_otp	      = '{SegredoOTP}'
-,c.validou_otp	      = '{ValidouOTP}'
-,c.cnpj_fornecedor    = '{CnpjFornecedor}'
-,c.criado_por	      = '{CriadoPor}'
-,c.criado_em	      = '{CriadoEm}'
-,c.alterado_por	      = '{AlteradoPor}'
-,c.alterado_em	      = '{AlteradoEm}'
-,c.excluido_por	      = '{ExcluidoPor}'
-,c.excluido_em	      = '{ExcluidoEm}'
+UPDATE SET c.codigo_cliente = '${CodigoCliente}'
+,c.codigo_empresa			= '${CodigoEmpresa}'
+,c.login				    = '${Login}'
+,c.nome					    = '${Nome}'
+,c.email				    = '${Email}'
+,c.url					    = '${Url}'
+,c.lider				    = '${Lider}'
+,c.ativo				    = '${Ativo}'
+,c.atualizar_senha		    = '${AtualizarSenha}'
+,c.segredo_otp			    = '${SegredoOTP}'
+,c.validou_otp			    = '${ValidouOTP}'
+,c.cnpj_fornecedor		    = '${CnpjFornecedor}'
+,c.criado_por			    = '${CriadoPor}'
+,c.criado_em			    = '${CriadoEm}'
+,c.alterado_por			    = '${AlteradoPor}'
+,c.alterado_em			    = '${AlteradoEm}'
+,c.excluido_por			    = '${ExcluidoPor}'
+,c.excluido_em			    = '${ExcluidoEm}'
 WHEN NOT MATCHED THEN 
+INSERT (
+codigo_usuario
+,codigo_cliente
+,codigo_empresa
+,login
+,nome
+,email
+,url
+,lider
+,ativo
+,atualizar_senha
+,segredo_otp
+,validou_otp
+,cnpj_fornecedor
+,criado_por
+,criado_em
+,alterado_por
+,alterado_em
+,excluido
+,excluido_por
+,excluido_em)
+VALUES(
+'${CodigoUsuario}'
+,'${CodigoCliente}'
+,'${CodigoEmpresa}'
+,'${Login}'
+,'${Nome}'
+,'${Email}'
+,'${Url}'
+,'${Lider}'
+,'${Ativo}'
+,'${AtualizarSenha}'
+,'${SegredoOTP}'
+,'${ValidouOTP}'
+,'${CnpjFornecedor}'
+,'${CriadoPor}'
+,'${CriadoEm}'
+,'${AlteradoPor}'
+,'${AlteradoEm}'
+,'${ExcluidoPor}'
+,'${ExcluidoEm}');
