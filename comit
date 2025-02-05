@@ -1,6 +1,10 @@
 MERGE INTO usuario AS c
-USING usuario AS u
-ON (c.codigo_usuario = ${CodigoUsuario})
+USING (SELECT ${CodigoUsuario} AS codigo_usuario) AS u
+ON EXISTS (
+    SELECT 1 
+    FROM usuario 
+    WHERE codigo_usuario = u.codigo_usuario
+)
 WHEN MATCHED THEN 
     UPDATE SET 
         c.codigo_cliente = ${CodigoCliente},
