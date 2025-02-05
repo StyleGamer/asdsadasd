@@ -15,7 +15,7 @@ WHEN MATCHED THEN
         c.segredo_otp = '${SegredoOTP}',
         c.validou_otp = CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
         c.cnpj_fornecedor = '${CnpjFornecedor}',
-        c.criado_por = '${CriadoPor}',
+        c.criado_por = ${CriadoPor},
         c.criado_em = CASE 
                         WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
                         THEN REPLACE('${CriadoEm}', 'T', ' ')
@@ -51,7 +51,7 @@ WHEN NOT MATCHED THEN
         '${SegredoOTP}',
         CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
         '${CnpjFornecedor}',
-        '${CriadoPor}',
+        ${CriadoPor},
         CASE 
             WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
             THEN REPLACE('${CriadoEm}', 'T', ' ')
