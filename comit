@@ -7,8 +7,8 @@ ON EXISTS (
 )
 WHEN MATCHED THEN 
     UPDATE SET 
-        c.codigo_cliente = ${CodigoCliente},
-        c.codigo_empresa = ${CodigoEmpresa},
+        c.codigo_cliente = COALESCE(NULLIF('${CodigoCliente}', ''), NULL),
+        c.codigo_empresa = COALESCE(NULLIF('${CodigoEmpresa}', ''), NULL),
         c.login = '${Login}',
         c.nome = '${Nome}',
         c.email = '${Email}',
@@ -43,8 +43,8 @@ WHEN NOT MATCHED THEN
             alterado_por, alterado_em, excluido_por, excluido_em)
     VALUES (
         ${CodigoUsuario},
-        ${CodigoCliente},
-        ${CodigoEmpresa},
+        COALESCE(NULLIF('${CodigoCliente}', ''), NULL),
+        COALESCE(NULLIF('${CodigoEmpresa}', ''), NULL),
         '${Login}',
         '${Nome}',
         '${Email}',
