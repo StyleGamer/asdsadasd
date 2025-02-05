@@ -1,65 +1,72 @@
-
-merge into usuario as c
-USING usuario  as u
-
-ON (c.codigo_usuario        =  ${CodigoUsuario})
+MERGE INTO usuario AS c
+USING usuario AS u
+ON (c.codigo_usuario = ${CodigoUsuario})
 WHEN MATCHED THEN 
-UPDATE SET c.codigo_cliente = {CodigoCliente}
-,c.codigo_empresa			= ${CodigoEmpresa}
-,c.login				    = '${Login}'
-,c.nome					    = '${Nome}'
-,c.email				    = '${Email}'
-,c.url					    = '${Url}'
-,c.lider				    = CAST(IFF('${Lider}' = 'True',1,0) AS INT)
-,c.ativo				    = CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
-,c.atualizar_senha		    = CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
-,c.segredo_otp			    = '${SegredoOTP}'
-,c.validou_otp			    =  CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
-,c.cnpj_fornecedor		    = '${CnpjFornecedor}'
-,c.criado_por			    = '${CriadoPor}'
-,c.criado_em			    = REPLACE('${CriadoEm}', 'T', ' ')
-,c.alterado_por			    = '${AlteradoPor}'
-,c.alterado_em			    = REPLACE('${AlteradoEm}', 'T', ' ')
-,c.excluido_por			    = '${ExcluidoPor}'
-,c.excluido_em			    = REPLACE('${ExcluidoEm}', 'T', ' ')
+    UPDATE SET 
+        c.codigo_cliente = ${CodigoCliente},
+        c.codigo_empresa = ${CodigoEmpresa},
+        c.login = '${Login}',
+        c.nome = '${Nome}',
+        c.email = '${Email}',
+        c.url = '${Url}',
+        c.lider = CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.ativo = CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.atualizar_senha = CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.segredo_otp = '${SegredoOTP}',
+        c.validou_otp = CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.cnpj_fornecedor = '${CnpjFornecedor}',
+        c.criado_por = '${CriadoPor}',
+        c.criado_em = CASE 
+                        WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
+                        THEN REPLACE('${CriadoEm}', 'T', ' ')
+                        ELSE '' 
+                     END,
+        c.alterado_por = '${AlteradoPor}',
+        c.alterado_em = CASE 
+                        WHEN '${AlteradoEm}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoEm}')) != '' 
+                        THEN REPLACE('${AlteradoEm}', 'T', ' ')
+                        ELSE '' 
+                     END,
+        c.excluido_por = '${ExcluidoPor}',
+        c.excluido_em = CASE 
+                        WHEN '${ExcluidoEm}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoEm}')) != '' 
+                        THEN REPLACE('${ExcluidoEm}', 'T', ' ')
+                        ELSE '' 
+                     END
 WHEN NOT MATCHED THEN 
-INSERT INTO usuario (
-codigo_usuario
-,codigo_cliente
-,codigo_empresa
-,login
-,nome
-,email
-,url
-,lider
-,ativo
-,atualizar_senha
-,segredo_otp
-,validou_otp
-,cnpj_fornecedor
-,criado_por
-,criado_em
-,alterado_por
-,alterado_em
-,excluido_por
-,excluido_em)
-VALUES(
-${CodigoUsuario}
-,${CodigoCliente}
-,${CodigoEmpresa}
-,'${Login}'
-,'${Nome}'
-,'${Email}'
-,'${Url}'
-CAST(IFF(,'${Lider}' = 'True',1,0) AS INT)
-,CAST(IFF('${Ativo}' = 'True',1,0) AS INT)
-,CAST(IFF('${AtualizarSenha}' = 'True',1,0) AS INT)
-,'${SegredoOTP}'
-, CAST(IFF('${ValidouOTP}' = 'True',1,0) AS INT)
-,'${CnpjFornecedor}'
-,'${CriadoPor}'
-,REPLACE('${CriadoEm}', 'T', ' ')
-,'${AlteradoPor}'
-,REPLACE('${AlteradoEm}', 'T', ' ')
-,'${ExcluidoPor}'
-,REPLACE('${ExcluidoEm}', 'T', ' '));
+    INSERT (codigo_usuario, codigo_cliente, codigo_empresa, login, nome, email, url, lider, ativo, 
+            atualizar_senha, segredo_otp, validou_otp, cnpj_fornecedor, criado_por, criado_em, 
+            alterado_por, alterado_em, excluido_por, excluido_em)
+    VALUES (
+        ${CodigoUsuario},
+        ${CodigoCliente},
+        ${CodigoEmpresa},
+        '${Login}',
+        '${Nome}',
+        '${Email}',
+        '${Url}',
+        CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
+        '${SegredoOTP}',
+        CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
+        '${CnpjFornecedor}',
+        '${CriadoPor}',
+        CASE 
+            WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
+            THEN REPLACE('${CriadoEm}', 'T', ' ')
+            ELSE '' 
+        END,
+        '${AlteradoPor}',
+        CASE 
+            WHEN '${AlteradoEm}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoEm}')) != '' 
+            THEN REPLACE('${AlteradoEm}', 'T', ' ')
+            ELSE '' 
+        END,
+        '${ExcluidoPor}',
+        CASE 
+            WHEN '${ExcluidoEm}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoEm}')) != '' 
+            THEN REPLACE('${ExcluidoEm}', 'T', ' ')
+            ELSE '' 
+        END
+    );
