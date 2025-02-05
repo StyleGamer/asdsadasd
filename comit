@@ -1,24 +1,20 @@
 MERGE INTO usuario AS c
 USING (SELECT ${CodigoUsuario} AS codigo_usuario) AS u
-ON EXISTS (
-    SELECT 1 
-    FROM usuario 
-    WHERE codigo_usuario = u.codigo_usuario
-)
+ON (c.codigo_usuario = u.codigo_usuario)
 WHEN MATCHED THEN 
     UPDATE SET 
         c.codigo_cliente = COALESCE(NULLIF('${CodigoCliente}', ''), NULL),
         c.codigo_empresa = COALESCE(NULLIF('${CodigoEmpresa}', ''), NULL),
-        c.login = '${Login}',
-        c.nome = '${Nome}',
-        c.email = '${Email}',
+        c.login = REPLACE('${Login}', '''', '''''),  
+        c.nome = REPLACE('${Nome}', '''', '''''),  
+        c.email = REPLACE('${Email}', '''', ''''''), 
         c.url = '${Url}',
         c.lider = CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
         c.ativo = CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
         c.atualizar_senha = CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
         c.segredo_otp = '${SegredoOTP}',
         c.validou_otp = CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
-        c.cnpj_fornecedor = '${CnpjFornecedor}',
+        c.cnpj_fornecedor = REPLACE('${CnpjFornecedor}', '''', ''''''),  
         c.criado_por = COALESCE(NULLIF('${CriadoPor}', ''), NULL),
         c.criado_em = CASE 
                         WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
@@ -45,16 +41,16 @@ WHEN NOT MATCHED THEN
         ${CodigoUsuario},
         COALESCE(NULLIF('${CodigoCliente}', ''), NULL),
         COALESCE(NULLIF('${CodigoEmpresa}', ''), NULL),
-        '${Login}',
-        '${Nome}',
-        '${Email}',
+        REPLACE('${Login}', '''', ''''''),  
+        REPLACE('${Nome}', '''', ''''''),  
+        REPLACE('${Email}', '''', ''''''), 
         '${Url}',
         CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
         CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
         CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
         '${SegredoOTP}',
         CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
-        '${CnpjFornecedor}',
+        REPLACE('${CnpjFornecedor}', '''', ''''''),  
         COALESCE(NULLIF('${CriadoPor}', ''), NULL),
         CASE 
             WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
