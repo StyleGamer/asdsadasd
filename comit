@@ -23,7 +23,7 @@ UPDATE SET c.codigo_cliente = {CodigoCliente}
 ,c.excluido_por			    = '${ExcluidoPor}'
 ,c.excluido_em			    = REPLACE('${ExcluidoEm}', 'T', ' ')
 WHEN NOT MATCHED THEN 
-INSERT (
+INSERT INTO usuario (
 codigo_usuario
 ,codigo_cliente
 ,codigo_empresa
