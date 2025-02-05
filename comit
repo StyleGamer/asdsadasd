@@ -9,25 +9,37 @@ WHEN MATCHED THEN
         c.nome = '${Nome}',
         c.email = '${Email}',
         c.url = '${Url}',
-        c.lider = CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
-        c.ativo = CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
-        c.atualizar_senha = CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.lider = CAST(CASE WHEN '${Lider}' = 'true' THEN 1 ELSE 0 END AS INT),
+        c.ativo = CAST(CASE WHEN '${Ativo}' = 'true' THEN 1 ELSE 0 END AS INT),
+        c.atualizar_senha = CAST(CASE WHEN '${AtualizarSenha}' = 'true' THEN 1 ELSE 0 END AS INT),
         c.segredo_otp = '${SegredoOTP}',
-        c.validou_otp = CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
+        c.validou_otp = CAST(CASE WHEN '${ValidouOTP}' = 'true' THEN 1 ELSE 0 END AS INT),
         c.cnpj_fornecedor = '${CnpjFornecedor}',
-        c.criado_por = ${CriadoPor},
+        c.criado_por = CASE 
+            WHEN '${CriadoPor}' IS NOT NULL AND LTRIM(RTRIM('${CriadoPor}')) != '' 
+            THEN ${CriadoPor}
+            ELSE '' 
+        END,
         c.criado_em = CASE 
                         WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
                         THEN REPLACE('${CriadoEm}', 'T', ' ')
                         ELSE '' 
                      END,
-        c.alterado_por = '${AlteradoPor}',
+        c.alterado_por = CASE 
+            WHEN '${AlteradoPor}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoPor}')) != '' 
+            THEN ${AlteradoPor}
+            ELSE '' 
+        END,
         c.alterado_em = CASE 
                         WHEN '${AlteradoEm}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoEm}')) != '' 
                         THEN REPLACE('${AlteradoEm}', 'T', ' ')
                         ELSE '' 
                      END,
-        c.excluido_por = '${ExcluidoPor}',
+        c.excluido_por = CASE 
+            WHEN '${ExcluidoPor}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoPor}')) != '' 
+            THEN ${ExcluidoPor}
+            ELSE '' 
+        END,
         c.excluido_em = CASE 
                         WHEN '${ExcluidoEm}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoEm}')) != '' 
                         THEN REPLACE('${ExcluidoEm}', 'T', ' ')
@@ -45,25 +57,38 @@ WHEN NOT MATCHED THEN
         '${Nome}',
         '${Email}',
         '${Url}',
-        CAST(CASE WHEN '${Lider}' = 'True' THEN 1 ELSE 0 END AS INT),
-        CAST(CASE WHEN '${Ativo}' = 'True' THEN 1 ELSE 0 END AS INT),
-        CAST(CASE WHEN '${AtualizarSenha}' = 'True' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${Lider}' = 'true' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${Ativo}' = 'true' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${AtualizarSenha}' = 'true' THEN 1 ELSE 0 END AS INT),
         '${SegredoOTP}',
-        CAST(CASE WHEN '${ValidouOTP}' = 'True' THEN 1 ELSE 0 END AS INT),
+        CAST(CASE WHEN '${ValidouOTP}' = 'true' THEN 1 ELSE 0 END AS INT),
         '${CnpjFornecedor}',
-        ${CriadoPor},
+        CASE 
+            WHEN '${CriadoPor}' IS NOT NULL AND LTRIM(RTRIM('${CriadoPor}')) != '' 
+            THEN ${CriadoPor}
+            ELSE '' 
+        END,
         CASE 
             WHEN '${CriadoEm}' IS NOT NULL AND LTRIM(RTRIM('${CriadoEm}')) != '' 
             THEN REPLACE('${CriadoEm}', 'T', ' ')
             ELSE '' 
         END,
-        '${AlteradoPor}',
+        CASE 
+            WHEN '${AlteradoPor}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoPor}')) != '' 
+            THEN ${AlteradoPor}
+            ELSE '' 
+        END,
         CASE 
             WHEN '${AlteradoEm}' IS NOT NULL AND LTRIM(RTRIM('${AlteradoEm}')) != '' 
             THEN REPLACE('${AlteradoEm}', 'T', ' ')
             ELSE '' 
         END,
-        '${ExcluidoPor}',
+       
+        CASE 
+            WHEN '${ExcluidoPor}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoPor}')) != '' 
+            THEN ${ExcluidoPor}
+            ELSE '' 
+        END,
         CASE 
             WHEN '${ExcluidoEm}' IS NOT NULL AND LTRIM(RTRIM('${ExcluidoEm}')) != '' 
             THEN REPLACE('${ExcluidoEm}', 'T', ' ')
