@@ -1,20 +1,9 @@
-DECLARE @CODIGO_AUTORIZACAO INT,
-		@CODIGO_AGENDA INT,
+DECLARE @CODIGO_AGENDA INT =  ${codigoAgenda},
 		@PEDIDO VARCHAR(MAX) = '${pedido}'
-
-
-
-
-SELECT @CODIGO_AGENDA = CODIGO, @CODIGO_AUTORIZACAO = CODIGO_AUTORIZACAO FROM PDA_UX_AGENDA WHERE PEDIDO = @PEDIDO
- 
-DELETE PDA_UX_ESTOQUE_ITEM WHERE CODIGO_ESTOQUE in (SELECT CODIGO FROM PDA_UX_ESTOQUE WHERE PEDIDO = @PEDIDO)
-DELETE PDA_UX_ESTOQUE WHERE PEDIDO = @PEDIDO
-DELETE PDA_UX_AGENDA_XML_ITEM WHERE CODIGO_XML IN (SELECT CODIGO_XML FROM PDA_UX_AGENDA_XML_AGENDA WHERE CODIGO_AGENDA = @CODIGO_AGENDA)
-DELETE PDA_UX_AGENDA_XML WHERE CODIGO IN (SELECT CODIGO_XML FROM PDA_UX_AGENDA_XML_AGENDA WHERE CODIGO_AGENDA = @CODIGO_AGENDA)
-DELETE PDA_UX_AGENDA_XML_AGENDA WHERE CODIGO_AGENDA = @CODIGO_AGENDA
-DELETE PDA_UX_AGENDA_MOTORISTA WHERE CODIGO_AUTORIZACAO = @CODIGO_AUTORIZACAO
-DELETE PDA_UX_AGENDA_TRIAGEM WHERE PEDIDO = @PEDIDO
-DELETE PDA_UX_AGENDA_ITEM WHERE CODIGO_AGENDA = @CODIGO_AGENDA
-DELETE PDA_UX_AGENDA WHERE PEDIDO = @PEDIDO
-
+    delete from agenda_pedido_item where codigo_agenda_pedido in (select codigo_agenda_pedido from agenda_pedido where pedido = @pedido)
+	delete from agenda_xml_item where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where pedido = @pedido)
+	delete from agenda_xml where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where pedido = @pedido)
+	delete from agenda_pedido where pedido = @pedido
+	delete from agenda_portaria where codigo_agenda = @codigo_agenda
+	delete from agenda where codigo_agenda = @codigo_agenda
  
