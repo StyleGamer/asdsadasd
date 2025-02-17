@@ -1,9 +1,6 @@
-DECLARE @CODIGO_AGENDA INT =  ${codigoAgenda},
-		@PEDIDO VARCHAR(MAX) = '${pedido}'
-    delete from agenda_pedido_item where codigo_agenda_pedido in (select codigo_agenda_pedido from agenda_pedido where pedido = @pedido)
-	delete from agenda_xml_item where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where pedido = @pedido)
-	delete from agenda_xml where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido where pedido = @pedido)
-	delete from agenda_pedido where pedido = @pedido
-	delete from agenda_portaria where codigo_agenda = @codigo_agenda
-	delete from agenda where codigo_agenda = @codigo_agenda
- 
+select A.codigo_agenda, A.codigo_filial, 'No Show' as acao,	c.codigo_recusa as motivoRecusa, 'No Show Automatico.' as observacao, b.pedido as pedido
+from agenda a
+join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+LEFT join motivo_recusa c on c.descricao  = 'No Show Automático.'
+where a.data_entrega > getdate() - 2
+and b.codigo_agenda_status < 5
