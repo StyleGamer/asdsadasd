@@ -1,6 +1,7 @@
-select A.codigo_agenda, A.codigo_filial, 'No Show' as acao,	c.codigo_recusa as motivoRecusa, 'No Show Automatico.' as observacao, b.pedido as pedido
-from agenda a
-join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-LEFT join motivo_recusa c on c.descricao  = 'No Show Automático.'
-where a.data_entrega > getdate() - 2
-and b.codigo_agenda_status < 5
+declare @pedido varchar(25) = '9932579',
+	    @filial decimal(18,0) = 46
+if not exists(select pedido from log_processamento where pedido = @pedido)
+begin
+insert into log_processamento (pedido,codigo_agenda_status,acao,motivo,observacao,codigo_filial,criado_por,criado_em)
+values(@pedido,10,'Cancelado','Pedido iniciado na PDA.', 'O pedido não poderá prosseguir no nosso agendamento, pois foi iniciado na PDA.',@filial, 1, GETDATE())
+end
