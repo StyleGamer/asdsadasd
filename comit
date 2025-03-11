@@ -1,7 +1,2 @@
-declare @pedido varchar(25) = '9932579',
-	    @filial decimal(18,0) = 46
-if not exists(select pedido from log_processamento where pedido = @pedido)
-begin
-insert into log_processamento (pedido,codigo_agenda_status,acao,motivo,observacao,codigo_filial,criado_por,criado_em)
-values(@pedido,10,'Cancelado','Pedido iniciado na PDA.', 'O pedido não poderá prosseguir no nosso agendamento, pois foi iniciado na PDA.',@filial, 1, GETDATE())
-end
+https://api.torratorra.com.br:5703/Admin/v1/Email
+a67fbc340a3468b6ef91409ec227ea24d9af7a1f2858e369be6ad0bef61f4265
