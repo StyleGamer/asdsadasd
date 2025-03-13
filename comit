@@ -1,1 +1,8 @@
-Email: "{ "assunto": "TESTE", "corpo": "TESTE", "de": "portal-noreply@torratorra.com.br", "para": "diogo.granado@lojastorra.com.br", "cc":  "erik.silva@lojastorra.com.br" }"
+select a.codigo_agenda as CodigoAgenda
+	 , c.codigo_filial_cliente as CodigoFilialCliente
+	 , b.pedido as CodigoPedido
+  from agenda a
+		join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+		join filial c on a.codigo_filial = c.codigo_filial
+where a.criado_em >= GETDATE()-2 and codigo_filial_cliente = '000084'
+order by a.codigo_agenda
