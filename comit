@@ -1,2 +1,1 @@
-https://api.torratorra.com.br:5703/Admin/v1/Email
-X-Torra-Handshake a67fbc340a3468b6ef91409ec227ea24d9af7a1f2858e369be6ad0bef61f4265
+Email: "{ "assunto": "TESTE", "corpo": "TESTE", "de": "portal-noreply@torratorra.com.br", "para": "diogo.granado@lojastorra.com.br,erik.silva@lojastorra.com.br", "cc":  "" }"
