@@ -1,8 +1,2 @@
-select a.codigo_agenda as CodigoAgenda
-	 , c.codigo_filial_cliente as CodigoFilialCliente
-	 , b.pedido as CodigoPedido
-  from agenda a
-		join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-		join filial c on a.codigo_filial = c.codigo_filial
-where a.criado_em >= GETDATE()-2 and codigo_filial_cliente = '000084'
-order by a.codigo_agenda
+https://api.torratorra.com.br:5703/Admin/v1/Email
+X-Torra-Handshake a67fbc340a3468b6ef91409ec227ea24d9af7a1f2858e369be6ad0bef61f4265
