@@ -1,53 +1,23 @@
-
-declare @codigo_filial int = 46 --codigo_filial_cliente = brusque 100001
-
---agenda 
-select a.*
-  from agenda a
- where convert(date,a.criado_em) >= convert(date,getdate()-6) 
-   and a.codigo_filial = @codigo_filial
- order by a.codigo_agenda
+DECLARE @codigo_agenda INT, 
+	    @codigo_filial_cliente varchar(50) = '100001', 
+		@pedido varchar(25);
  
---agenda_pedido
-select b.*
-  from agenda a
-  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
- where convert(date,a.criado_em) >= convert(date,getdate()-6)  
-   and a.codigo_filial = @codigo_filial
-order by a.codigo_agenda
+DECLARE cur_agenda CURSOR FOR
+select distinct codigo_agenda, 
+	   pedido 
+  from agenda_pedido
  
---agenda_pedido_item
-select c.*
-  from agenda a
-  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-  join agenda_pedido_item c on b.codigo_agenda_pedido = c.codigo_agenda_pedido
- where convert(date,a.criado_em) >= convert(date,getdate()-6)  
-   and a.codigo_filial = @codigo_filial
-order by a.codigo_agenda
+OPEN cur_agenda
  
---agenda_portaria
-select b.*
-  from agenda a
-  join agenda_portaria b on a.codigo_agenda = b.codigo_agenda
- where convert(date,a.criado_em) >= convert(date,getdate()-6)  
-   and a.codigo_filial = @codigo_filial
-order by a.codigo_agenda
-
---agenda_xml
-select c.*
-  from agenda a
-  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-  join agenda_xml c on b.codigo_agenda_xml = c.codigo_agenda_xml
- where convert(date,a.criado_em) >= convert(date,getdate()-6)  
-   and a.codigo_filial = @codigo_filial
-order by a.codigo_agenda
-
---agenda_xml_item
-select c.*
-  from agenda a
-  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-  join agenda_xml_item c on b.codigo_agenda_xml = c.codigo_agenda_xml
- where convert(date,a.criado_em) >= convert(date,getdate()-6)  
-   and a.codigo_filial = @codigo_filial
-order by a.codigo_agenda
+FETCH NEXT FROM cur_agenda
+INTO @codigo_agenda, @codigo_filial_cliente, @pedido
  
+WHILE @@FETCH_STATUS = 0
+BEGIN
+	exec TTP_INTEGRACAO_AGENDA_I @codigo_agenda, @codigo_filial_cliente, @pedido;
+ 
+    FETCH NEXT FROM cur_agenda
+    INTO @codigo_agenda, @codigo_filial_cliente, @pedido
+END
+CLOSE cur_agenda;
+DEALLOCATE cur_agenda;
