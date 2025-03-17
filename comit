@@ -1,8 +1,6 @@
-select a.codigo_agenda as CodigoAgenda 
-   , c.codigo_filial_cliente as CodigoFilialCliente
-   , b.pedido as CodigoPedido
-  from agenda a
-    join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
-    join filial c on a.codigo_filial = c.codigo_filial
-where convert(date,a.criado_em) = convert(date,getdate()) and c.codigo_filial_cliente == '000084'
-order by a.codigo_agenda
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda with (NOLOCK) where codigo_agenda = '${CodigoAgenda}' 
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda_pedido with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda_pedido_item with (NOLOCK) where codigo_agenda_pedido in(select codigo_agenda_pedido from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda_xml with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido with (NOLOCK)  where codigo_agenda = '${CodigoAgenda}')
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda_xml_item  with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
+select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente from agenda_portaria  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
