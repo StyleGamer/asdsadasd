@@ -1,12 +1,53 @@
 
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda' as Tabela from agenda with (NOLOCK) where codigo_agenda = '${CodigoAgenda}' 
-																					    
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda_Pedido' as Tabela from agenda_pedido with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
-																					   
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda_Pedido_Item' as Tabela from agenda_pedido_item with (NOLOCK) where codigo_agenda_pedido in(select codigo_agenda_pedido from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
-																					   
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda_XML' as Tabela from agenda_xml with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido with (NOLOCK)  where codigo_agenda = '${CodigoAgenda}')
-																					    
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda_XML_Item' as Tabela from agenda_xml_item  with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
-																					  
-select *,'${CodigoAgenda}' as AgendaCodigo,'codigoFilialCliente' as codigoFilialCliente, 'Agenda_Portaria' as Tabela from agenda_portaria  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
+declare @codigo_filial int = 46 --codigo_filial_cliente = brusque 100001
+
+--agenda 
+select a.*
+  from agenda a
+ where convert(date,a.criado_em) >= convert(date,getdate()-6) 
+   and a.codigo_filial = @codigo_filial
+ order by a.codigo_agenda
+ 
+--agenda_pedido
+select b.*
+  from agenda a
+  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+ where convert(date,a.criado_em) >= convert(date,getdate()-6)  
+   and a.codigo_filial = @codigo_filial
+order by a.codigo_agenda
+ 
+--agenda_pedido_item
+select c.*
+  from agenda a
+  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+  join agenda_pedido_item c on b.codigo_agenda_pedido = c.codigo_agenda_pedido
+ where convert(date,a.criado_em) >= convert(date,getdate()-6)  
+   and a.codigo_filial = @codigo_filial
+order by a.codigo_agenda
+ 
+--agenda_portaria
+select b.*
+  from agenda a
+  join agenda_portaria b on a.codigo_agenda = b.codigo_agenda
+ where convert(date,a.criado_em) >= convert(date,getdate()-6)  
+   and a.codigo_filial = @codigo_filial
+order by a.codigo_agenda
+
+--agenda_xml
+select c.*
+  from agenda a
+  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+  join agenda_xml c on b.codigo_agenda_xml = c.codigo_agenda_xml
+ where convert(date,a.criado_em) >= convert(date,getdate()-6)  
+   and a.codigo_filial = @codigo_filial
+order by a.codigo_agenda
+
+--agenda_xml_item
+select c.*
+  from agenda a
+  join agenda_pedido b on a.codigo_agenda = b.codigo_agenda
+  join agenda_xml_item c on b.codigo_agenda_xml = c.codigo_agenda_xml
+ where convert(date,a.criado_em) >= convert(date,getdate()-6)  
+   and a.codigo_filial = @codigo_filial
+order by a.codigo_agenda
+ 
