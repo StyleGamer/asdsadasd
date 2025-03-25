@@ -1,2 +1,20 @@
-select Codigo_Agenda as CodigoAgenda, Pedido as CodigoPedido ,FilialCliente as CodigoFilialCliente ,Numero_De_Tentativa as Tentativa from TT_AGENDAMENTO_PAF
+select Codigo_Agenda as CodigoAgenda, Pedido as CodigoPedido ,FilialCliente as CodigoFilialCliente ,Numero_De_Tentativa as Tentativa from TT_INTEGRACAO_AGENDA
 where Processado = 0 and Numero_De_Tentativa < 5
+
+
+
+DECLARE @Codigo_Agenda decimal(18,0) = 1,
+		@Pedido varchar(25) = '255',
+		@FilialCliente varchar(25) = '145',
+		@Processado  bit =1
+IF NOT EXISTS(SELECT 1 FROM TT_INTEGRACAO_AGENDA WHERE Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente)
+BEGIN 
+
+INSERT INTO TT_INTEGRACAO_AGENDA(Codigo_Agenda, Pedido, FilialCliente, Processado, Numero_De_Tentativa)
+VALUES(@Codigo_Agenda,@Pedido,@FilialCliente,@Processado,1)
+end
+ELSE 
+BEGIN
+UPDATE TT_INTEGRACAO_AGENDA SET Processado = @Processado ,Numero_De_Tentativa = Numero_De_Tentativa+1  where Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente
+
+END
