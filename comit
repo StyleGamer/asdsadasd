@@ -1,23 +1,17 @@
-DECLARE @codigo_agenda INT, 
-	    @codigo_filial_cliente varchar(50) = '100001', 
-		@pedido varchar(25);
- 
-DECLARE cur_agenda CURSOR FOR
-select distinct codigo_agenda, 
-	   pedido 
-  from agenda_pedido
- 
-OPEN cur_agenda
- 
-FETCH NEXT FROM cur_agenda
-INTO @codigo_agenda, @codigo_filial_cliente, @pedido
- 
-WHILE @@FETCH_STATUS = 0
+DECLARE @Codigo_Agenda decimal(18,0) = 1,
+		@Pedido varchar(25) = '255',
+		@FilialCliente varchar(25) = '145',
+		@Processado  bit =1 ,
+		@Numero_De_Tentativa int = 2
+
+
+IF NOT EXISTS(SELECT 1 FROM TT_AGENDAMENTO_PAF WHERE Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente)
+BEGIN 
+
+INSERT INTO TT_AGENDAMENTO_PAF(Codigo_Agenda, Pedido, FilialCliente, Processado, Numero_De_Tentativa)
+VALUES(@Codigo_Agenda,@Pedido,@FilialCliente,@Processado,@Numero_De_Tentativa)
+end
+ELSE 
 BEGIN
-	exec TTP_INTEGRACAO_AGENDA_I @codigo_agenda, @codigo_filial_cliente, @pedido;
- 
-    FETCH NEXT FROM cur_agenda
-    INTO @codigo_agenda, @codigo_filial_cliente, @pedido
+UPDATE TT_AGENDAMENTO_PAF SET Processado = @Processado ,Numero_De_Tentativa = @Numero_De_Tentativa  where Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente
 END
-CLOSE cur_agenda;
-DEALLOCATE cur_agenda;
