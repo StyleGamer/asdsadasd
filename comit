@@ -1,20 +1,11 @@
-select Codigo_Agenda as CodigoAgenda, Pedido as CodigoPedido ,FilialCliente as CodigoFilialCliente ,Numero_De_Tentativa as Tentativa from TT_INTEGRACAO_AGENDA
-where Processado = 0 and Numero_De_Tentativa < 5
+select * from agenda with (NOLOCK) where codigo_agenda = '${CodigoAgenda}' 
 
+select * from agenda_pedido with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
 
+select * from agenda_pedido_item with (NOLOCK) where codigo_agenda_pedido in(select codigo_agenda_pedido from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
 
-DECLARE @Codigo_Agenda decimal(18,0) = 1,
-		@Pedido varchar(25) = '255',
-		@FilialCliente varchar(25) = '145',
-		@Processado  bit =1
-IF NOT EXISTS(SELECT 1 FROM TT_INTEGRACAO_AGENDA WHERE Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente)
-BEGIN 
+select * from agenda_xml with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido with (NOLOCK)  where codigo_agenda = '${CodigoAgenda}')
 
-INSERT INTO TT_INTEGRACAO_AGENDA(Codigo_Agenda, Pedido, FilialCliente, Processado, Numero_De_Tentativa)
-VALUES(@Codigo_Agenda,@Pedido,@FilialCliente,@Processado,1)
-end
-ELSE 
-BEGIN
-UPDATE TT_INTEGRACAO_AGENDA SET Processado = @Processado ,Numero_De_Tentativa = Numero_De_Tentativa+1  where Codigo_Agenda = @Codigo_Agenda and Pedido = @Pedido and FilialCliente = @FilialCliente
+select * from agenda_xml_item  with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
 
-END
+select * from agenda_portaria  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
