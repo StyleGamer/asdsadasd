@@ -1,11 +1,102 @@
-select * from agenda with (NOLOCK) where codigo_agenda = '${CodigoAgenda}' 
+DECLARE @codigo_usuario DECIMAL(18,0) = '${CodigoUsuario}',
+        @codigo_cliente DECIMAL(18,0) = CASE WHEN '${CodigoCliente}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @codigo_empresa DECIMAL(18,0) = CASE WHEN '${CodigoEmpresa}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @login VARCHAR(40) = CASE WHEN '${Login}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @senha BINARY(32) = CASE WHEN '${Senha}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @nome VARCHAR(255) = CASE WHEN '${Nome}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @email VARCHAR(255) = CASE WHEN '${Email}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @url VARCHAR(255) = CASE WHEN '${Url}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @lider BIT = CASE WHEN '${Lider}' IS NOT NULL THEN CASE WHEN LOWER('${Lider}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @ativo BIT = CASE WHEN '${Ativo}' IS NOT NULL THEN CASE WHEN LOWER('${Ativo}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @atualizar_senha BIT = CASE WHEN '${AtualizarSenha}' IS NOT NULL THEN CASE WHEN LOWER('${AtualizarSenha}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @integrado BIT = CASE WHEN '${Integrado}' IS NOT NULL THEN CASE WHEN LOWER('${Integrado}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @validou_otp BIT = CASE WHEN '${ValidouOtp}' IS NOT NULL THEN CASE WHEN LOWER('${ValidouOtp}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @excluido BIT = CASE WHEN '${Excluido}' IS NOT NULL THEN CASE WHEN LOWER('${Excluido}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @requer_mfa BIT = CASE WHEN '${RequerMfa}' IS NOT NULL THEN CASE WHEN LOWER('${RequerMfa}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
+        @segredo_otp NVARCHAR(32) = CASE WHEN '${SegredoOtp}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @cnpj_fornecedor VARCHAR(25) = CASE WHEN '${CnpjFornecedor}' IS NOT NULL THEN REPLACE('${tabela}', '''', '') ELSE NULL END,
+        @criado_por DECIMAL(18,0) = CASE WHEN '${CriadoPor}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @criado_em DATETIME = CASE WHEN '${CriadoEm}' IS NOT NULL THEN REPLACE('${tabela}', 'T', ' ') ELSE NULL END,
+        @alterado_por DECIMAL(18,0) = CASE WHEN '${AlteradoPor}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @alterado_em DATETIME = CASE WHEN '${AlteradoEm}' IS NOT NULL THEN REPLACE('${tabela}', 'T', ' ') ELSE NULL END,
+        @excluido_por DECIMAL(18,0) = CASE WHEN '${ExcluidoPor}' IS NOT NULL THEN '${tabela}' ELSE NULL END,
+        @excluido_em DATETIME = CASE WHEN '${ExcluidoEm}' IS NOT NULL THEN REPLACE('${tabela}', 'T', ' ') ELSE NULL END;
 
-select * from agenda_pedido with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
 
-select * from agenda_pedido_item with (NOLOCK) where codigo_agenda_pedido in(select codigo_agenda_pedido from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
-
-select * from agenda_xml with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido with (NOLOCK)  where codigo_agenda = '${CodigoAgenda}')
-
-select * from agenda_xml_item  with (NOLOCK) where codigo_agenda_xml in (select codigo_agenda_xml from agenda_pedido  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}')
-
-select * from agenda_portaria  with (NOLOCK) where codigo_agenda = '${CodigoAgenda}'
+		IF EXISTS (SELECT 1 FROM usuario WHERE codigo_usuario = @codigo_usuario)
+BEGIN
+    UPDATE usuario SET 
+        codigo_usuario = @codigo_usuario,
+        codigo_cliente = @codigo_cliente,
+        codigo_empresa = @codigo_empresa,
+        login = @login,
+        senha = @senha,
+        nome = @nome,
+        email = @email,
+        url = @url,
+        lider = @lider,
+        ativo = @ativo,
+        atualizar_senha = @atualizar_senha,
+        integrado = @integrado,
+        segredo_otp = @segredo_otp,
+        validou_otp = @validou_otp,
+        cnpj_fornecedor = @cnpj_fornecedor,
+        criado_por = @criado_por,
+        criado_em = @criado_em,
+        alterado_por = @alterado_por,
+        alterado_em = @alterado_em,
+        excluido = @excluido,
+        excluido_por = @excluido_por,
+        excluido_em = @excluido_em,
+        requer_mfa = @requer_mfa
+    WHERE codigo_usuario = @codigo_usuario
+END
+ELSE
+BEGIN
+    INSERT INTO usuario ( 
+        codigo_cliente,
+        codigo_empresa,
+        login,
+        senha,
+        nome,
+        email,
+        url,
+        lider,
+        ativo,
+        atualizar_senha,
+        integrado,
+        segredo_otp,
+        validou_otp,
+        cnpj_fornecedor,
+        criado_por,
+        criado_em,
+        alterado_por,
+        alterado_em,
+        excluido,
+        excluido_por,
+        excluido_em,
+        requer_mfa)
+    VALUES(
+        @codigo_cliente,
+        @codigo_empresa,
+        @login,
+        @senha,
+        @nome,
+        @email,
+        @url,
+        @lider,
+        @ativo,
+        @atualizar_senha,
+        @integrado,
+        @segredo_otp,
+        @validou_otp,
+        @cnpj_fornecedor,
+        @criado_por,
+        @criado_em,
+        @alterado_por,
+        @alterado_em,
+        @excluido,
+        @excluido_por,
+        @excluido_em,
+        @requer_mfa)
+END
