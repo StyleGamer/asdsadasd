@@ -1,6 +1,6 @@
-DECLARE @codigo_usuario DECIMAL(18,0) = '${CodigoUsuario}',
-        @codigo_cliente DECIMAL(18,0) = CASE WHEN NULLIF('${CodigoCliente}', '') IS NOT NULL THEN '${CodigoCliente}' ELSE NULL END,
-        @codigo_empresa DECIMAL(18,0) = CASE WHEN NULLIF('${CodigoEmpresa}', '') IS NOT NULL THEN '${CodigoEmpresa}' ELSE NULL END,
+DECLARE @codigo_usuario DECIMAL(18,0) = TRY_CONVERT(DECIMAL(18,0), '${CodigoUsuario}'),
+        @codigo_cliente DECIMAL(18,0) = CASE WHEN NULLIF('${CodigoCliente}', '') IS NOT NULL THEN TRY_CONVERT(DECIMAL(18,0), '${CodigoCliente}') ELSE NULL END,
+        @codigo_empresa DECIMAL(18,0) = CASE WHEN NULLIF('${CodigoEmpresa}', '') IS NOT NULL THEN TRY_CONVERT(DECIMAL(18,0), '${CodigoEmpresa}') ELSE NULL END,
         @login VARCHAR(40) = CASE WHEN NULLIF('${Login}', '') IS NOT NULL THEN REPLACE('${Login}', '''', '') ELSE NULL END,
         @senha BINARY(32) = CASE WHEN NULLIF('${Senha}', '') IS NOT NULL THEN CONVERT(BINARY(32), '${Senha}') ELSE NULL END,
         @nome VARCHAR(255) = CASE WHEN NULLIF('${Nome}', '') IS NOT NULL THEN REPLACE('${Nome}', '''', '') ELSE NULL END,
@@ -15,19 +15,18 @@ DECLARE @codigo_usuario DECIMAL(18,0) = '${CodigoUsuario}',
         @requer_mfa BIT = CASE WHEN NULLIF('${RequerMfa}', '') IS NOT NULL THEN CASE WHEN LOWER('${RequerMfa}') = 'true' THEN 1 ELSE 0 END ELSE NULL END,
         @segredo_otp NVARCHAR(32) = CASE WHEN NULLIF('${SegredoOtp}', '') IS NOT NULL THEN REPLACE('${SegredoOtp}', '''', '') ELSE NULL END,
         @cnpj_fornecedor VARCHAR(25) = CASE WHEN NULLIF('${CnpjFornecedor}', '') IS NOT NULL THEN REPLACE('${CnpjFornecedor}', '''', '') ELSE NULL END,
-        @criado_por DECIMAL(18,0) = CASE WHEN NULLIF('${CriadoPor}', '') IS NOT NULL THEN '${CriadoPor}' ELSE NULL END,
-        @criado_em DATETIME = CASE WHEN NULLIF('${CriadoEm}', '') IS NOT NULL THEN REPLACE('${CriadoEm}', 'T', ' ') ELSE NULL END,
-        @alterado_por DECIMAL(18,0) = CASE WHEN NULLIF('${AlteradoPor}', '') IS NOT NULL THEN '${AlteradoPor}' ELSE NULL END,
-        @alterado_em DATETIME = CASE WHEN NULLIF('${AlteradoEm}', '') IS NOT NULL THEN REPLACE('${AlteradoEm}', 'T', ' ') ELSE NULL END,
-        @excluido_por DECIMAL(18,0) = CASE WHEN NULLIF('${ExcluidoPor}', '') IS NOT NULL THEN '${ExcluidoPor}' ELSE NULL END,
-        @excluido_em DATETIME = CASE WHEN NULLIF('${ExcluidoEm}', '') IS NOT NULL THEN REPLACE('${ExcluidoEm}', 'T', ' ') ELSE NULL END;
+        @criado_por DECIMAL(18,0) = CASE WHEN NULLIF('${CriadoPor}', '') IS NOT NULL THEN TRY_CONVERT(DECIMAL(18,0), '${CriadoPor}') ELSE NULL END,
+        @criado_em DATETIME = CASE WHEN NULLIF('${CriadoEm}', '') IS NOT NULL THEN TRY_CONVERT(DATETIME, REPLACE('${CriadoEm}', 'T', ' ')) ELSE NULL END,
+        @alterado_por DECIMAL(18,0) = CASE WHEN NULLIF('${AlteradoPor}', '') IS NOT NULL THEN TRY_CONVERT(DECIMAL(18,0), '${AlteradoPor}') ELSE NULL END,
+        @alterado_em DATETIME = CASE WHEN NULLIF('${AlteradoEm}', '') IS NOT NULL THEN TRY_CONVERT(DATETIME, REPLACE('${AlteradoEm}', 'T', ' ')) ELSE NULL END,
+        @excluido_por DECIMAL(18,0) = CASE WHEN NULLIF('${ExcluidoPor}', '') IS NOT NULL THEN TRY_CONVERT(DECIMAL(18,0), '${ExcluidoPor}') ELSE NULL END,
+        @excluido_em DATETIME = CASE WHEN NULLIF('${ExcluidoEm}', '') IS NOT NULL THEN TRY_CONVERT(DATETIME, REPLACE('${ExcluidoEm}', 'T', ' '));
 
 
 
 		IF EXISTS (SELECT 1 FROM usuario WHERE codigo_usuario = @codigo_usuario)
 BEGIN
     UPDATE usuario SET 
-        codigo_usuario = @codigo_usuario,
         codigo_cliente = @codigo_cliente,
         codigo_empresa = @codigo_empresa,
         login = @login,
@@ -55,6 +54,7 @@ END
 ELSE
 BEGIN
     INSERT INTO usuario ( 
+		codigo_usuario,
         codigo_cliente,
         codigo_empresa,
         login,
@@ -78,10 +78,11 @@ BEGIN
         excluido_em,
         requer_mfa)
     VALUES(
+		@codigo_usuario,
         @codigo_cliente,
         @codigo_empresa,
         @login,
-        @senha,
+        CONVERT(BINARY(32), @senha),
         @nome,
         @email,
         @url,
